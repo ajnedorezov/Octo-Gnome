@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import gnome.Constants;
 import gnome.RobotMap;
 import gnome.utilities.DaisyMath;
 
@@ -59,14 +60,13 @@ public class Navigation {
   }
 
   private Navigation() {
-/*
-    mLeftDriveEncoder = new Encoder(Constants.DigitalInputs.DRIVE_LEFT_ENCODER_1,
-        Constants.DigitalInputs.DRIVE_LEFT_ENCODER_2);
-    mRightDriveEncoder = new Encoder(Constants.DigitalInputs.DRIVE_RIGHT_ENCODER_1,
-        Constants.DigitalInputs.DRIVE_RIGHT_ENCODER_2);
-    mLeftDriveEncoder.setDistancePerPulse(Constants.Properties.DRIVE_DISTANCE_PER_PULSE);
-    mRightDriveEncoder.setDistancePerPulse(Constants.Properties.DRIVE_DISTANCE_PER_PULSE);
-*/
+
+    mLeftDriveEncoder = new Encoder(RobotMap.DigitalInputs.DRIVE_LEFT_ENCODER_1,
+        RobotMap.DigitalInputs.DRIVE_LEFT_ENCODER_2);
+    mRightDriveEncoder = new Encoder(RobotMap.DigitalInputs.DRIVE_RIGHT_ENCODER_1,
+        RobotMap.DigitalInputs.DRIVE_RIGHT_ENCODER_2);
+    mLeftDriveEncoder.setDistancePerPulse(Constants.Drive.DRIVE_DISTANCE_PER_PULSE);
+    mRightDriveEncoder.setDistancePerPulse(Constants.Drive.DRIVE_DISTANCE_PER_PULSE);
     
     try {
       mGyro = new AHRS(SPI.Port.kMXP);
@@ -231,11 +231,11 @@ public class Navigation {
 
   public void logToDashboard() {
     SmartDashboard.putNumber("heading", getHeadingInDegrees());
+    SmartDashboard.putBoolean("HasSideCollision", hasSideCollision());
+    SmartDashboard.putBoolean("HasForwardCollision", hasForwardCollision());
     SmartDashboard.putNumber("LeftEncoderRate", getLeftEncoderRate());
     SmartDashboard.putNumber("RightEncoderRate", getRightEncoderRate());
     SmartDashboard.putNumber("LeftEncoderDistance", getLeftEncoderDistance());
     SmartDashboard.putNumber("RightEncoderDistance", getRightEncoderDistance());
-    SmartDashboard.putBoolean("HasSideCollision", hasSideCollision());
-    SmartDashboard.putBoolean("HasForwardCollision", hasForwardCollision());
   }
 }

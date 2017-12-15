@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj.Compressor;
 
-import gnome.commands.ExampleCommand;
-import gnome.subsystems.ExampleSubsystem;
+import gnome.subsystems.Drive;
+import gnome.loops.Navigation;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,10 +22,9 @@ import gnome.subsystems.ExampleSubsystem;
  */
 public class Robot extends IterativeRobot {
 
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
-	public static OI oi;
+	public static OI mOI;
+	public static Drive mDrive;
 	
-
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
@@ -35,10 +34,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		oi = new OI();
-		chooser.addDefault("Default Auto", new ExampleCommand());
+		mOI = OI.getInstance();
+		
+		mDrive = Drive.getInstance();
+		
+		// chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
+		
+		logToDashboard();
 	}
 
 	/**
@@ -48,12 +52,14 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+	  logToDashboard();
 	}
 
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		
+		logToDashboard();
 	}
 
 	/**
@@ -81,6 +87,8 @@ public class Robot extends IterativeRobot {
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
 			autonomousCommand.start();
+		
+		logToDashboard();
 	}
 
 	/**
@@ -89,6 +97,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		logToDashboard();
 	}
 
 	@Override
@@ -99,6 +108,8 @@ public class Robot extends IterativeRobot {
 		// this line or comment it out.
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		
+		logToDashboard();
 	}
 
 	/**
@@ -106,7 +117,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
+		//Scheduler.getInstance().run();
+	  mOI.processInputs();
+	  logToDashboard();
 	}
 
 	/**
@@ -115,5 +128,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
+		logToDashboard();
+	}
+	
+	public void logToDashboard() {
+	    // Publish the desired outputs to the dashboard
+	    Navigation.getInstance().logToDashboard();
+	    Drive.getInstance().logToDashBoard();    
 	}
 }

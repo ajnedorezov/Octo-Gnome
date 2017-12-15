@@ -1,6 +1,8 @@
 package gnome.utilities;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * Creates an XboxController with predefined methods for finding the state/value of Xbox controller
@@ -19,12 +21,25 @@ public class XboxController extends Joystick {
       Axis_RightY = 5,
   // Not reccomended: buggy and unreliable
   Axis_DPad = 6;
+  
+  private Joystick controller;
+  public Button ButtonA, ButtonB, ButtonX, ButtonY, BumperLeft, BumperRight, ButtonStart, ButtonBack; 
 
   /**
    * Constructs a new XboxController with a specified port
    */
   public XboxController(final int port) {
     super(port);
+    
+    controller = new Joystick(port);
+    ButtonA = new JoystickButton(controller, A_Button);
+    ButtonB = new JoystickButton(controller, B_Button);
+    ButtonX = new JoystickButton(controller, X_Button);
+    ButtonY = new JoystickButton(controller, Y_Button);
+    ButtonStart = new JoystickButton(controller, Start_Button);
+    ButtonBack = new JoystickButton(controller, Back_Button);
+    BumperRight = new JoystickButton(controller, Right_Bumper);
+    BumperLeft = new JoystickButton(controller, Left_Bumper);
   }
 
   public boolean getStartButton() {
@@ -128,6 +143,34 @@ public class XboxController extends Joystick {
   public double getRightYAxis() {
     return getRawAxis(Axis_RightY);
   }
+  
+  /**
+   * returns the current value of the Axis_LeftX
+   */
+  public double getDeadbandedLeftXAxis(double deadband) {
+    return applyDeadband(getRawAxis(Axis_LeftX), deadband);
+  }
+
+  /**
+   * returns the current value of the Axis_LeftY
+   */
+  public double getDeadbandedLeftYAxis(double deadband) {
+    return applyDeadband(getRawAxis(Axis_LeftY), deadband);
+  }
+
+  /**
+   * returns the current value of the Axis_RightX
+   */
+  public double getDeadbandedRightXAxis(double deadband) {
+    return applyDeadband(getRawAxis(Axis_RightX), deadband);
+  }
+
+  /**
+   * returns the current value of the Axis_RightY
+   */
+  public double getDeadbandedRightYAxis(double deadband) {
+    return applyDeadband(getRawAxis(Axis_RightY), deadband);
+  }
 
 
   /**
@@ -135,5 +178,13 @@ public class XboxController extends Joystick {
    */
   public double getDPadAxis() {
     return getRawAxis(Axis_LeftX);
+  }
+  
+  public static double applyDeadband(double value, double deadband) {
+    if (value > -deadband && value < deadband) {
+      return 0.0;
+    } else {
+      return value;
+    }
   }
 }
