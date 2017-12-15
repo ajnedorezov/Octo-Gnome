@@ -117,8 +117,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		//Scheduler.getInstance().run();
-	  mOI.processInputs();
+	  mOI.processInputs(); // Do special processing on the inputs, or store states need by commands
+	  Scheduler.getInstance().run();
 	  logToDashboard();
 	}
 
